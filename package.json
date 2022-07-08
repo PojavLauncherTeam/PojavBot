@@ -6,7 +6,9 @@
   "license": "MIT",
   "scripts": {
     "compile": "yarn run rimraf dist/ && yarn run tsc -w",
-    "format": "yarn run prettier --write src"
+    "format": "yarn run prettier --write src",
+    "postinstall": "tsc",
+    "start": "node --enable-source-maps ."
   },
   "repository": "https://github.com/PojavLauncherTeam/PojavBot.git",
   "engines": {
