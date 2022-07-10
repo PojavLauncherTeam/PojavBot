@@ -16,6 +16,7 @@
     "yarn": "1.22"
   },
   "dependencies": {
+    "@discordjs/builders": "^0.15.0",
     "discord.js": "^13.8.1",
     "dotenv": "^16.0.1"
   },
