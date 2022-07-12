@@ -10,9 +10,11 @@ export class PojavClient extends Client<true> {
     }
     for (const [eventName, { event }] of Object.entries(EventsModule)) {
       if (event.once) {
-        this.once(eventName, event.listener);
+        // @ts-ignore
+        this.once(eventName, (...args) => event.listener(this, ...args));
       } else {
-        this.on(eventName, event.listener);
+        // @ts-ignore
+        this.on(eventName, (...args) => event.listener(this, ...args));
       }
     }
 
