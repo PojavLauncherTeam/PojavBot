@@ -1,5 +1,5 @@
 import type { Snowflake } from 'discord.js';
-import { Collection, MongoClient, type MongoClientOptions } from 'mongodb';
+import { type Collection, MongoClient, type MongoClientOptions } from 'mongodb';
 
 export class DatabaseClient {
   public mongo: MongoClient;

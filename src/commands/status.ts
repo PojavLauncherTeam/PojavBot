@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ColorResolvable, Constants, MessageEmbed } from 'discord.js';
+import { type ColorResolvable, Constants, MessageEmbed } from 'discord.js';
 import type { PojavCommand } from '.';
 import { makeFormattedTime } from '../util/Util';
 
