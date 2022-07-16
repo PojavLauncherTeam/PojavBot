@@ -14,4 +14,5 @@ export class DatabaseClient {
 interface GuildSchema {
   id: Snowflake;
   logsChannelId?: Snowflake;
+  joinLeaveChannelId?: Snowflake;
 }
