@@ -7,5 +7,5 @@ export * as say from './status';
 
 export interface PojavCommand {
   data: Pick<SlashCommandBuilder, 'toJSON'>;
-  listener(interaction: CommandInteraction<'cached'>, client: PojavClient): Awaitable<void>;
+  listener(interaction: CommandInteraction<'cached'>, client: PojavClient): Awaitable<unknown>;
 }

@@ -1,10 +1,15 @@
 import { Client, Collection } from 'discord.js';
 import * as CommandsModule from '../commands';
 import * as EventsModule from '../events';
+import { DatabaseClient } from './DatabaseClient';
 
 export class PojavClient extends Client<true> {
   public commands = new Collection<string, CommandsModule.PojavCommand>();
-  public override login(token?: string) {
+  public database = new DatabaseClient(process.env.MONGO_URL!);
+
+  public override async login(token?: string) {
+    await this.database.mongo.connect();
+
     for (const [commandName, { command }] of Object.entries(CommandsModule)) {
       this.commands.set(commandName, command);
     }
