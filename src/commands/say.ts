@@ -43,27 +43,14 @@ export const command: PojavCommand = {
         : '';
     await interaction.deferReply({ ephemeral: ephemeralnotices });
 
-    if (!interaction.member.permissions.has('MANAGE_MESSAGES')) {
-      interaction.editReply('You do not have permission to run this command.');
-      return;
-    }
-
-    if (interaction.options.getBoolean('showexecutorname') && !interaction.member.permissions.has('ADMINISTRATOR')) {
-      interaction.editReply('You do not have permission to not show the executor name.');
-      return;
-    }
-
-    if (!channel?.isText()) {
-      interaction.editReply('Specified channel is not a text channel.');
-      return;
-    }
-
-    if (message == '') {
-      interaction.editReply('You must provide a message.');
-      return;
-    }
+    if (!interaction.member.permissions.has('MANAGE_MESSAGES'))
+      return interaction.editReply('You do not have permission to run this command.');
+    if (interaction.options.getBoolean('showexecutorname') && !interaction.member.permissions.has('ADMINISTRATOR'))
+      return interaction.editReply('You do not have permission to not show the executor name.');
+    if (!channel?.isText()) return interaction.editReply('Specified channel is not a text channel.');
+    if (message == '') return interaction.editReply('You must provide a message.');
 
     await channel?.send({ content: message, reply: { messageReference: interaction.options.getString('replyto')! } });
-    await interaction.editReply('Successfully sent message.');
+    return interaction.editReply('Successfully sent message.');
   },
 };
