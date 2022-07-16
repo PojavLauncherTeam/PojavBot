@@ -20,6 +20,7 @@ interface GuildSchema {
   developerRoleId?: Snowflake;
   contributorRoleId?: Snowflake;
   vipRoleId?: Snowflake;
+  development?: boolean;
 }
 
 interface UserSchema {
