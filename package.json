@@ -18,7 +18,7 @@
   "dependencies": {
     "@discordjs/builders": "^0.15.0",
     "@sapphire/time-utilities": "^1.7.5",
-    "discord.js": "^13.8.1",
+    "discord.js": "^14.0.1",
     "dotenv": "^16.0.1",
     "mongodb": "^4.8.0"
   },
