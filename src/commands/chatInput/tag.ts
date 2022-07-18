@@ -21,6 +21,6 @@ export const command: PojavChatInputCommand = {
     if (!tag) return;
 
     const target = interaction.options.getUser('target');
-    interaction.reply(`${target ? Formatters.italic(`Tag suggestion for ${target}\n`) : ''}${tag.content}`);
+    interaction.reply(`${target ? `${Formatters.italic(`Tag suggestion for ${target}`)}\n` : ''}${tag.content}`);
   },
 };
