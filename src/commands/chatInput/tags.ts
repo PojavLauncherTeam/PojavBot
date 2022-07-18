@@ -53,13 +53,13 @@ export const command: PojavChatInputCommand = {
           .setMaxLength(100)
           .setMinLength(1)
           .setStyle(TextInputStyle.Short)
-          .setRequired(true)
       );
       const keywords = new ActionRowBuilder<TextInputBuilder>().setComponents(
         new TextInputBuilder()
           .setCustomId('keywords')
           .setLabel('Keywords (Separate with a comma)')
           .setStyle(TextInputStyle.Short)
+          .setRequired(false)
       );
       const content = new ActionRowBuilder<TextInputBuilder>().setComponents(
         new TextInputBuilder()
@@ -68,7 +68,6 @@ export const command: PojavChatInputCommand = {
           .setMaxLength(2000)
           .setMinLength(1)
           .setStyle(TextInputStyle.Paragraph)
-          .setRequired(true)
       );
       modal.setComponents(name, keywords, content);
 
@@ -96,7 +95,6 @@ export const command: PojavChatInputCommand = {
           .setMaxLength(100)
           .setMinLength(1)
           .setStyle(TextInputStyle.Short)
-          .setRequired(true)
       );
       const keywords = new ActionRowBuilder<TextInputBuilder>().setComponents(
         new TextInputBuilder()
@@ -104,6 +102,7 @@ export const command: PojavChatInputCommand = {
           .setLabel('Keywords (Separate with a comma)')
           .setValue(tag.keywords?.join(', ') ?? '')
           .setStyle(TextInputStyle.Short)
+          .setRequired(false)
       );
       const content = new ActionRowBuilder<TextInputBuilder>().setComponents(
         new TextInputBuilder()
@@ -113,7 +112,6 @@ export const command: PojavChatInputCommand = {
           .setMaxLength(2000)
           .setMinLength(1)
           .setStyle(TextInputStyle.Paragraph)
-          .setRequired(true)
       );
       modal.setComponents(name, keywords, content);
 
