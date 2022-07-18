@@ -8,5 +8,5 @@ export * as ready from './ready';
 
 export interface PojavEvent<K extends keyof ClientEvents> {
   once?: true;
-  listener(client: PojavClient, ...args: ClientEvents[K]): Awaitable<void>;
+  listener(client: PojavClient, ...args: ClientEvents[K]): Awaitable<unknown>;
 }
