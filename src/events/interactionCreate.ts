@@ -1,11 +1,11 @@
-import { Constants, Formatters, MessageEmbed } from 'discord.js';
+import { ChannelType, Colors, EmbedBuilder, Formatters } from 'discord.js';
 import { inspect } from 'util';
 import type { PojavEvent } from '.';
 
 export const event: PojavEvent<'interactionCreate'> = {
   async listener(client, interaction) {
     if (!interaction.inCachedGuild()) return;
-    if (interaction.isCommand()) {
+    if (interaction.isChatInputCommand()) {
       const { commandName } = interaction;
       const comamnd = client.commands.get(commandName);
       if (!comamnd) return;
@@ -18,9 +18,9 @@ export const event: PojavEvent<'interactionCreate'> = {
           if (!dbGuild?.logsChannelId) return;
 
           const logsChannel = client.channels.resolve(dbGuild.logsChannelId);
-          if (!logsChannel?.isText()) return;
+          if (logsChannel?.type !== ChannelType.GuildText) return;
 
-          const embed = new MessageEmbed()
+          const embed = new EmbedBuilder()
             .setTitle(`An unexpected error occurred while running a command`)
             .setFields([
               {
@@ -32,9 +32,9 @@ export const event: PojavEvent<'interactionCreate'> = {
                 value: Formatters.codeBlock(inspect(error).substring(0, 1017)),
               },
             ])
-            .setColor(Constants.Colors.RED);
+            .setColor(Colors.Red);
 
-          logsChannel.send({ embeds: [embed] });
+          await logsChannel.send({ embeds: [embed] });
         }
         console.log(error);
       }

@@ -4,7 +4,7 @@ import * as EventsModule from '../events';
 import { DatabaseClient } from './DatabaseClient';
 
 export class PojavClient extends Client<true> {
-  public commands = new Collection<string, CommandsModule.PojavCommand>();
+  public commands = new Collection<string, CommandsModule.PojavChatInputCommand>();
   public database = new DatabaseClient(process.env.MONGO_URL!);
 
   public override async login(token?: string) {

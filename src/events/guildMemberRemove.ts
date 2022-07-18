@@ -1,4 +1,4 @@
-import { Constants, Formatters, MessageEmbed } from 'discord.js';
+import { ChannelType, Colors, EmbedBuilder, Formatters } from 'discord.js';
 import type { PojavEvent } from '.';
 import { makeFormattedTime, makeUserURL } from '../util/Util';
 
@@ -8,11 +8,11 @@ export const event: PojavEvent<'guildMemberRemove'> = {
     if (!dbGuild?.joinLeaveChannelId) return;
 
     const joinLeaveChannel = client.channels.resolve(dbGuild.joinLeaveChannelId);
-    if (!joinLeaveChannel?.isText()) return;
+    if (joinLeaveChannel?.type !== ChannelType.GuildText) return;
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setAuthor({
-        iconURL: member.displayAvatarURL({ dynamic: true, format: 'png' }),
+        iconURL: member.displayAvatarURL({ extension: 'png' }),
         name: member.displayName,
         url: makeUserURL(member.id),
       })
@@ -28,8 +28,8 @@ export const event: PojavEvent<'guildMemberRemove'> = {
           value: makeFormattedTime(),
         }
       )
-      .setColor(Constants.Colors.LIGHT_GREY);
+      .setColor(Colors.LightGrey);
 
-    joinLeaveChannel.send({ embeds: [embed] });
+    await joinLeaveChannel.send({ embeds: [embed] });
   },
 };

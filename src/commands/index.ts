@@ -1,10 +1,9 @@
-import type { SlashCommandBuilder } from '@discordjs/builders';
-import type { Awaitable, CommandInteraction } from 'discord.js';
+import type { Awaitable, ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import type { PojavClient } from '../util/PojavClient';
 
-export * as status from './status';
+export * as status from './chatInput/status';
 
-export interface PojavCommand {
+export interface PojavChatInputCommand {
   data: Pick<SlashCommandBuilder, 'toJSON'>;
-  listener(interaction: CommandInteraction<'cached'>, client: PojavClient): Awaitable<unknown>;
+  listener(interaction: ChatInputCommandInteraction<'cached'>, client: PojavClient): Awaitable<unknown>;
 }
