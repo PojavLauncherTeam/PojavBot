@@ -1,5 +1,5 @@
 import { Time } from '@sapphire/time-utilities';
-import { type ColorResolvable, Constants, Formatters, MessageEmbed, BitField } from 'discord.js';
+import { type ColorResolvable, Formatters, BitField, ChannelType, Colors, EmbedBuilder } from 'discord.js';
 import type { PojavEvent } from '.';
 import { UserFlags } from '../util/DatabaseClient';
 import { makeFormattedTime, makeUserURL } from '../util/Util';
@@ -16,17 +16,17 @@ export const event: PojavEvent<'guildMemberAdd'> = {
 
     if (joinLeaveChannelId) {
       const joinLeaveChannel = client.channels.resolve(joinLeaveChannelId);
-      if (!joinLeaveChannel?.isText()) return;
+      if (joinLeaveChannel?.type !== ChannelType.GuildText) return;
 
       const userCreatedAccountAgo = Date.now() - member.user.createdTimestamp;
       let color: ColorResolvable;
-      if (userCreatedAccountAgo > Time.Day * 28) color = Constants.Colors.GREEN;
-      else if (userCreatedAccountAgo > Time.Day * 14) color = Constants.Colors.YELLOW;
-      else color = Constants.Colors.RED;
+      if (userCreatedAccountAgo > Time.Day * 28) color = Colors.Green;
+      else if (userCreatedAccountAgo > Time.Day * 14) color = Colors.Yellow;
+      else color = Colors.Red;
 
-      const embed = new MessageEmbed()
+      const embed = new EmbedBuilder()
         .setAuthor({
-          iconURL: member.displayAvatarURL({ dynamic: true, format: 'png' }),
+          iconURL: member.displayAvatarURL({ extension: 'png' }),
           name: member.displayName,
           url: makeUserURL(member.id),
         })
@@ -44,7 +44,7 @@ export const event: PojavEvent<'guildMemberAdd'> = {
         )
         .setColor(color);
 
-      joinLeaveChannel.send({ embeds: [embed] });
+      await joinLeaveChannel.send({ embeds: [embed] });
     }
 
     if (dbUser?.flags) {
@@ -60,7 +60,7 @@ export const event: PojavEvent<'guildMemberAdd'> = {
         roleIdsToAdd.push(vipRoleId);
       }
 
-      member.roles.add(roleIdsToAdd);
+      await member.roles.add(roleIdsToAdd);
     }
   },
 };

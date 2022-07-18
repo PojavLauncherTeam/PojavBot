@@ -1,9 +1,8 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { type ColorResolvable, Constants, MessageEmbed } from 'discord.js';
-import type { PojavCommand } from '.';
-import { makeFormattedTime } from '../util/Util';
+import { type ColorResolvable, EmbedBuilder, Colors, SlashCommandBuilder } from 'discord.js';
+import type { PojavChatInputCommand } from '..';
+import { makeFormattedTime } from '../../util/Util';
 
-export const command: PojavCommand = {
+export const command: PojavChatInputCommand = {
   data: new SlashCommandBuilder().setName('status').setDescription('Gives the bot status'),
   async listener(interaction, client) {
     const firstTimestamp = Date.now();
@@ -11,11 +10,11 @@ export const command: PojavCommand = {
     const ping = Date.now() - firstTimestamp;
 
     let color: ColorResolvable;
-    if (ping >= 0 && ping < 250) color = Constants.Colors.GREEN;
-    else if (ping < 500) color = Constants.Colors.YELLOW;
-    else color = Constants.Colors.RED;
+    if (ping >= 0 && ping < 250) color = Colors.Green;
+    else if (ping < 500) color = Colors.Yellow;
+    else color = Colors.Red;
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Status')
       .setFields([
         {
