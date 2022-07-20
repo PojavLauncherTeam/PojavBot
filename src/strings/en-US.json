@@ -10,6 +10,7 @@
   "commands.tags.deleted": "Tag with name `{name}` successfully deleted!",
   "commands.tags.editingTag": "Editing the {name} tag",
   "commands.tags.keywords": "Keywords (Separate with a comma)",
+  "commands.tags.name": "Name",
   "commands.say.nopermission": "You do not have permission to run this command.",
   "commands.say.nopermissionexecutornamehide": "You do not have permission to not show the executor name.",
   "commands.say.channelnottextbased": "Specified channel is not a text-based channel.",
