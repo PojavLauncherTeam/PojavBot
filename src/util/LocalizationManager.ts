@@ -5,7 +5,7 @@ export class LocalizationManager {
 
   async load() {
     for (const locale of Object.values(PojavLocale)) {
-      const strings = (await import(`../strings/${locale}.json`)) as Partial<PojavStringsFile>;
+      const strings = (await import(`../strings/${locale}.json`, { assert: { type: 'json' } }).then((res) => res.default)) as Partial<PojavStringsFile>;
       this.locales.set(locale, strings);
     }
   }
