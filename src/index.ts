@@ -1,10 +1,12 @@
 import 'dotenv/config';
-import { Intents } from 'discord.js';
+import { disableValidators, GatewayIntentBits, Partials } from 'discord.js';
 import { PojavClient } from './util/PojavClient';
 
+disableValidators();
+
 const client = new PojavClient({
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS],
-  partials: ['GUILD_MEMBER'],
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
+  partials: [Partials.GuildMember],
 });
 
 client.login();

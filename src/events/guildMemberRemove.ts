@@ -1,35 +1,47 @@
-import { Constants, Formatters, MessageEmbed } from 'discord.js';
+import { ChannelType, Colors, EmbedBuilder } from 'discord.js';
 import type { PojavEvent } from '.';
-import { makeFormattedTime, makeUserURL } from '../util/Util';
+import type { GetStringFunctionOptions, PojavStringsFile } from '../util/LocalizationManager';
+import { makeFormattedTime, makeUserURL, resolveLocale } from '../util/Util';
 
 export const event: PojavEvent<'guildMemberRemove'> = {
   async listener(client, member) {
     const dbGuild = await client.database.guilds.findOne({ id: member.guild.id });
     if (!dbGuild?.joinLeaveChannelId) return;
 
-    const joinLeaveChannel = client.channels.resolve(dbGuild.joinLeaveChannelId);
-    if (!joinLeaveChannel?.isText()) return;
+    function getString(
+      key: keyof PojavStringsFile,
+      { locale = resolveLocale(dbGuild?.locale), variables }: Partial<GetStringFunctionOptions> = {}
+    ) {
+      return client.localizations.getString(key, { locale, variables });
+    }
 
-    const embed = new MessageEmbed()
+    const joinLeaveChannel = client.channels.resolve(dbGuild.joinLeaveChannelId);
+    if (joinLeaveChannel?.type !== ChannelType.GuildText) return;
+
+    const embed = new EmbedBuilder()
       .setAuthor({
-        iconURL: member.displayAvatarURL({ dynamic: true, format: 'png' }),
+        iconURL: member.displayAvatarURL({ extension: 'png' }),
         name: member.displayName,
         url: makeUserURL(member.id),
       })
-      .setTitle('Goodbye!')
-      .setDescription(`${member} ${Formatters.inlineCode(member.user.tag)} (${member.id})`)
+      .setTitle(getString('events.guildMemberRemove.goodbye'))
+      .setDescription(
+        getString('global.userInfo', {
+          variables: { user: `${member}`, tag: member.user.tag, id: member.id },
+        })
+      )
       .setFields(
         {
-          name: 'Created the account',
+          name: getString('global.createdAccount'),
           value: makeFormattedTime(member.user.createdAt),
         },
         {
-          name: 'Left the server',
+          name: getString('events.guildMemberRemove.leftServer'),
           value: makeFormattedTime(),
         }
       )
-      .setColor(Constants.Colors.LIGHT_GREY);
+      .setColor(Colors.LightGrey);
 
-    joinLeaveChannel.send({ embeds: [embed] });
+    await joinLeaveChannel.send({ embeds: [embed] });
   },
 };

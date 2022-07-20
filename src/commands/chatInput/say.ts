@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import type { PojavCommand } from '.';
+import type { PojavChatInputCommand } from '..';
 
-export const command: PojavCommand = {
+export const command: PojavChatInputCommand = {
   data: new SlashCommandBuilder()
     .setName('say')
     .setDescription('Send a message')
@@ -43,11 +43,11 @@ export const command: PojavCommand = {
         : '';
     await interaction.deferReply({ ephemeral: ephemeralnotices });
 
-    if (!interaction.member.permissions.has('MANAGE_MESSAGES'))
+    if (!interaction.member.permissions.has('ManageMessages'))
       return interaction.editReply('You do not have permission to run this command.');
-    if (interaction.options.getBoolean('showexecutorname') && !interaction.member.permissions.has('ADMINISTRATOR'))
+    if (interaction.options.getBoolean('showexecutorname') && !interaction.member.permissions.has('Administrator'))
       return interaction.editReply('You do not have permission to not show the executor name.');
-    if (!channel?.isText()) return interaction.editReply('Specified channel is not a text channel.');
+    if (!channel?.isTextBased()) return interaction.editReply('Specified channel is not a text channel.');
     if (message == '') return interaction.editReply('You must provide a message.');
 
     await channel?.send({ content: message, reply: { messageReference: interaction.options.getString('replyto')! } });

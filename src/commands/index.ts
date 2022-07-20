@@ -1,11 +1,21 @@
-import type { SlashCommandBuilder } from '@discordjs/builders';
-import type { Awaitable, CommandInteraction } from 'discord.js';
+import type { Awaitable, ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import type { GetStringFunction } from '../util/LocalizationManager';
 import type { PojavClient } from '../util/PojavClient';
 
-export * as status from './status';
-export * as say from './status';
+export * as status from './chatInput/status';
+export * as say from './chatInput/say';
+export * as tag from './chatInput/tag';
+export * as tags from './chatInput/tags';
 
-export interface PojavCommand {
+export interface PojavChatInputCommand {
   data: Pick<SlashCommandBuilder, 'toJSON'>;
-  listener(interaction: CommandInteraction<'cached'>, client: PojavClient): Awaitable<unknown>;
+  listener(
+    interaction: ChatInputCommandInteraction<'cached'>,
+    options: PojavChatInputCommandOptions
+  ): Awaitable<unknown>;
+}
+
+export interface PojavChatInputCommandOptions {
+  client: PojavClient;
+  getString: GetStringFunction;
 }

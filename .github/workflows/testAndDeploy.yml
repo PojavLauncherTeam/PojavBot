@@ -1,4 +1,4 @@
-name: "Test"
+name: "Test and deploy"
 on:
   push:
     branches:
@@ -23,3 +23,18 @@ jobs:
 
       - name: "Install dependencies and compile code"
         run: "yarn"
+  deploy:
+    name: "Deploy"
+    needs: "testing"
+    runs-on: "ubuntu-latest"
+    if: ${{ github.event_name == 'push' }}
+    steps:
+      - name: "Checkout repository"
+        uses: "actions/checkout@v2"
+
+      - name: "Deploy to Heroku"
+        uses: "AkhileshNS/heroku-deploy@v3.12.12"
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "pojavbot"
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
