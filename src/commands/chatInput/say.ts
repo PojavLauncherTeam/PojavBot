@@ -30,7 +30,7 @@ export const command: PojavChatInputCommand = {
         .setDescription('Message id of target reply if you need the message to be a reply')
         .setRequired(false)
     ),
-  async listener(interaction, _) {
+  async listener(interaction, { getString }) {
     const ephemeralnotices = interaction.options.getBoolean('ephemeralnotices') ? true : false;
     const channel = interaction.options.getChannel('channel')
       ? interaction.options.getChannel('channel')
@@ -44,13 +44,13 @@ export const command: PojavChatInputCommand = {
     await interaction.deferReply({ ephemeral: ephemeralnotices });
 
     if (!interaction.member.permissions.has('ManageMessages'))
-      return interaction.editReply('You do not have permission to run this command.');
+      return interaction.editReply(getString('commands.say.nopermission'));
     if (interaction.options.getBoolean('showexecutorname') && !interaction.member.permissions.has('Administrator'))
-      return interaction.editReply('You do not have permission to not show the executor name.');
-    if (!channel?.isTextBased()) return interaction.editReply('Specified channel is not a text channel.');
-    if (message == '') return interaction.editReply('You must provide a message.');
+      return interaction.editReply(getString('commands.say.nopermissionexecutornamehide'));
+    if (!channel?.isTextBased()) return interaction.editReply(getString('commands.say.channelnottextbased'));
+    if (message == '') return interaction.editReply(getString('commands.say.mustprovidemessage'));
 
     await channel?.send({ content: message, reply: { messageReference: interaction.options.getString('replyto')! } });
-    return interaction.editReply('Successfully sent message.');
+    return interaction.editReply(getString('commands.say.sendsuccess'));
   },
 };
