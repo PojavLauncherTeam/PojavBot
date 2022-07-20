@@ -1,8 +1,9 @@
 import { Time } from '@sapphire/time-utilities';
-import { type ColorResolvable, Formatters, BitField, ChannelType, Colors, EmbedBuilder } from 'discord.js';
+import { type ColorResolvable, BitField, ChannelType, Colors, EmbedBuilder } from 'discord.js';
 import type { PojavEvent } from '.';
 import { UserFlags } from '../util/DatabaseClient';
-import { makeFormattedTime, makeUserURL } from '../util/Util';
+import type { GetStringFunctionOptions, PojavStringsFile } from '../util/LocalizationManager';
+import { makeFormattedTime, makeUserURL, resolveLocale } from '../util/Util';
 
 export const event: PojavEvent<'guildMemberAdd'> = {
   async listener(client, member) {
@@ -13,6 +14,13 @@ export const event: PojavEvent<'guildMemberAdd'> = {
 
     if (!dbGuild) return;
     const { joinLeaveChannelId, developerRoleId, contributorRoleId, vipRoleId } = dbGuild;
+
+    function getString(
+      key: keyof PojavStringsFile,
+      { locale = resolveLocale(dbGuild?.locale), variables }: Partial<GetStringFunctionOptions> = {}
+    ) {
+      return client.localizations.getString(key, { locale, variables });
+    }
 
     if (joinLeaveChannelId) {
       const joinLeaveChannel = client.channels.resolve(joinLeaveChannelId);
@@ -30,15 +38,19 @@ export const event: PojavEvent<'guildMemberAdd'> = {
           name: member.displayName,
           url: makeUserURL(member.id),
         })
-        .setTitle('Welcome!')
-        .setDescription(`${member} ${Formatters.inlineCode(member.user.tag)} (${member.id})`)
+        .setTitle(getString('events.guildMemberAdd.welcome'))
+        .setDescription(
+          getString('global.userInfo', {
+            variables: { user: `${member}`, tag: member.user.tag, id: member.id },
+          })
+        )
         .setFields(
           {
-            name: 'Created the account',
+            name: getString('global.createdAccount'),
             value: makeFormattedTime(member.user.createdAt),
           },
           {
-            name: 'Joined the server',
+            name: getString('events.guildMemberAdd.joinedServer'),
             value: makeFormattedTime(member.joinedAt!),
           }
         )

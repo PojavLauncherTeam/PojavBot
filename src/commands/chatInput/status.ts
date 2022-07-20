@@ -4,7 +4,7 @@ import { makeFormattedTime } from '../../util/Util';
 
 export const command: PojavChatInputCommand = {
   data: new SlashCommandBuilder().setName('status').setDescription('Gives the bot status'),
-  async listener(interaction, client) {
+  async listener(interaction, { client, getString }) {
     const firstTimestamp = Date.now();
     await interaction.deferReply();
     const ping = Date.now() - firstTimestamp;
@@ -15,18 +15,20 @@ export const command: PojavChatInputCommand = {
     else color = Colors.Red;
 
     const embed = new EmbedBuilder()
-      .setTitle('Status')
+      .setTitle(getString('commands.status.status'))
       .setFields([
         {
-          name: 'My ping',
-          value: `${ping}ms`,
+          name: getString('commands.status.myPing'),
+          value: getString('commands.status.ping', { variables: { ms: ping } }),
         },
         {
-          name: 'WebSoket ping',
-          value: `${client.ws.ping}ms`,
+          name: getString('commands.status.wsPing'),
+          value: getString('commands.status.ping', {
+            variables: { ms: client.ws.ping },
+          }),
         },
         {
-          name: 'Online since',
+          name: getString('commands.status.onlineSince'),
           value: makeFormattedTime(client.readyTimestamp),
         },
       ])

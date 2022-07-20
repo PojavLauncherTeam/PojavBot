@@ -1,5 +1,6 @@
 import type { Snowflake } from 'discord.js';
 import { type Collection, MongoClient, type MongoClientOptions } from 'mongodb';
+import type { PojavLocale } from './LocalizationManager';
 
 export class DatabaseClient {
   public mongo: MongoClient;
@@ -22,6 +23,7 @@ interface GuildSchema {
   developerRoleId?: Snowflake;
   contributorRoleId?: Snowflake;
   vipRoleId?: Snowflake;
+  locale?: PojavLocale;
   development?: boolean;
 }
 
