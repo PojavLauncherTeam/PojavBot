@@ -16,6 +16,7 @@
     "yarn": "1.22"
   },
   "dependencies": {
+    "@messageformat/core": "^3.0.1",
     "@sapphire/time-utilities": "^1.7.5",
     "discord.js": "^14.0.1",
     "dotenv": "^16.0.1",

@@ -1,5 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { Formatters } from 'discord.js';
+import { SlashCommandBuilder } from 'discord.js';
 import type { PojavChatInputCommand } from '..';
 import { findTag } from '../../util/Util';
 
@@ -16,11 +15,15 @@ export const command: PojavChatInputCommand = {
         .setRequired(true)
     )
     .addUserOption((option) => option.setName('target').setDescription('User to mention')),
-  async listener(interaction, client) {
+  async listener(interaction, { client, getString }) {
     const tag = await findTag(interaction, client);
     if (!tag) return;
 
     const target = interaction.options.getUser('target');
-    interaction.reply(`${target ? `${Formatters.italic(`Tag suggestion for ${target}`)}\n` : ''}${tag.content}`);
+    interaction.reply(
+      getString('commands.tag.suggestion', {
+        variables: { target: target ? 'user' : 'other', user: `${target}`, content: tag.content },
+      })
+    );
   },
 };

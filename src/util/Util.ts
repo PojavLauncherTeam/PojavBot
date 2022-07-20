@@ -1,4 +1,5 @@
 import { ChatInputCommandInteraction, Formatters, ModalSubmitInteraction, type Snowflake } from 'discord.js';
+import { PojavLocale } from '../util/LocalizationManager';
 import type { TagSchema } from './DatabaseClient';
 import type { PojavClient } from './PojavClient';
 
@@ -39,4 +40,8 @@ export function makeTagData(interaction: ModalSubmitInteraction<'cached'>) {
 
 export function makeUserURL(id: Snowflake) {
   return `https://discord.com/users/${id}`;
+}
+
+export function resolveLocale(locale: unknown) {
+  return Object.values(PojavLocale).includes(locale as PojavLocale) ? (locale as PojavLocale) : PojavLocale.EnglishUS;
 }

@@ -2,13 +2,25 @@ import { ChannelType, Colors, EmbedBuilder, InteractionType, Formatters } from '
 import type { UpdateFilter } from 'mongodb';
 import { inspect } from 'util';
 import type { PojavEvent } from '.';
+import type { GetStringFunctionOptions } from '../util/LocalizationManager';
 import type { TagSchema } from '../util/DatabaseClient';
-import { makeTagData } from '../util/Util';
+import type { PojavStringsFile } from '../util/LocalizationManager';
+import { makeTagData, resolveLocale } from '../util/Util';
 
 export const event: PojavEvent<'interactionCreate'> = {
   async listener(client, interaction) {
     if (!interaction.inCachedGuild()) return;
+
     const { guildId } = interaction;
+    const dbGuild = await client.database.guilds.findOne({ id: guildId });
+
+    function getString(
+      key: keyof PojavStringsFile,
+      { locale = resolveLocale(dbGuild?.locale), variables }: Partial<GetStringFunctionOptions> = {}
+    ) {
+      return client.localizations.getString(key, { locale, variables });
+    }
+
     if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
       const { commandName } = interaction;
       const value = interaction.options.getFocused();
@@ -45,7 +57,7 @@ export const event: PojavEvent<'interactionCreate'> = {
       if (!comamnd) return;
 
       try {
-        await comamnd.listener(interaction, client);
+        await comamnd.listener(interaction, { client, getString });
       } catch (error) {
         if (process.env.NODE_ENV === 'production') {
           const dbGuild = await client.database.guilds.findOne({ development: true });
@@ -80,21 +92,23 @@ export const event: PojavEvent<'interactionCreate'> = {
         const existing = await client.database.tags.findOne({ name, guildId });
         if (existing)
           return interaction.reply({
-            content: `There's already a tag with name ${Formatters.inlineCode(name)}`,
+            content: getString('events.interactionCreate.tagExists', { variables: { name } }),
             ephemeral: true,
           });
 
         const tagData = makeTagData(interaction);
         await client.database.tags.insertOne(tagData);
         interaction.reply({
-          content: `Tag with name ${Formatters.inlineCode(name)} successfully created!`,
+          content: getString('events.interactionCreate.created', { variables: { name } }),
           ephemeral: true,
         });
       } else if (action === 'edit-tag') {
         const existing = await client.database.tags.findOne({ name: data!, guildId });
         if (!existing)
           return interaction.reply({
-            content: `There's no a tag with name ${Formatters.inlineCode(data!)}`,
+            content: getString('events.interactionCreate.tagNotExists', {
+              variables: { name: data! },
+            }),
             ephemeral: true,
           });
 
@@ -104,7 +118,7 @@ export const event: PojavEvent<'interactionCreate'> = {
           { $set: tagData as UpdateFilter<TagSchema> }
         );
         interaction.reply({
-          content: `Tag with name ${Formatters.inlineCode(tagData.name)} successfully edited!`,
+          content: getString('events.interactionCreate.tagEdited', { variables: { name: tagData.name } }),
           ephemeral: true,
         });
       }
