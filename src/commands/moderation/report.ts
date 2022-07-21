@@ -12,7 +12,7 @@ import type { PojavChatInputCommand } from '..';
 export const command: PojavChatInputCommand = {
   data: new SlashCommandBuilder()
     .setName('report')
-    .setDescription('Gives the bot status')
+    .setDescription('Makes user report')
     .addUserOption((option) => option.setName('user').setDescription('User to report').setRequired(true))
     .addStringOption((option) => option.setName('reason').setDescription('Reason of report').setRequired(true))
     .addAttachmentOption((option) => option.setName('proof').setDescription('Proof for report. Must be image or gif')),
