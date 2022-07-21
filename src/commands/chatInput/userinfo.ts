@@ -1,4 +1,4 @@
-import { Formatters, SlashCommandBuilder, EmbedBuilder, Colors, ActivityType } from 'discord.js';
+import { Formatters, SlashCommandBuilder, EmbedBuilder, Colors, ActivityType, ClientPresenceStatusData } from 'discord.js';
 import type { PojavChatInputCommand } from '..';
 import { makeFormattedTime } from '../../util/Util';
 
@@ -22,7 +22,6 @@ export const command: PojavChatInputCommand = {
       .setDescription(`${user} ${Formatters.inlineCode(user.tag)} (${user.id})`)
       .setThumbnail(member?.displayAvatarURL({ size: 4096 }) || user.displayAvatarURL({ size: 4096 }))
       .setColor(member?.displayColor || Colors.LightGrey);
-    console.log(member?.presence?.status);
     if (member) {
       let emoji: string;
       const statusName = member?.presence?.status || 'offline';
@@ -40,7 +39,7 @@ export const command: PojavChatInputCommand = {
           emoji = '<:offline:999281170921553960>';
       }
 
-      const platforms = member?.presence?.clientStatus ? Object.keys(member?.presence?.clientStatus) : [];
+      const platforms = member?.presence?.clientStatus ? Object.keys(member?.presence?.clientStatus) as (keyof ClientPresenceStatusData)[] : [];
 
       const status = `${emoji} ${getString(`commands.userinfo.status.${statusName}`)} ${(() =>
         platforms.length
