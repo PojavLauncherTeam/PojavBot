@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
+import { ChannelType, EmbedBuilder, GuildTextBasedChannel, PermissionsBitField } from 'discord.js';
 import type { PojavChatInputCommand } from '..';
 
 export const command: PojavChatInputCommand = {
@@ -14,7 +14,14 @@ export const command: PojavChatInputCommand = {
       option
         .setName('channel')
         .setDescription('The target channel (default is the current channel)')
-        .addChannelTypes(ChannelType.GuildText)
+        .addChannelTypes(
+          ChannelType.GuildText,
+          ChannelType.GuildNews,
+          ChannelType.GuildNewsThread,
+          ChannelType.GuildPrivateThread,
+          ChannelType.GuildPublicThread,
+          ChannelType.GuildText,
+          ChannelType.GuildVoice)
         .setRequired(false)
     )
     .addBooleanOption((option) =>
@@ -31,14 +38,11 @@ export const command: PojavChatInputCommand = {
     )
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageMessages),
   async listener(interaction, { getString, client }) {
-    const ephemeralnotices = interaction.options.getBoolean('ephemeralnotices') ? true : false;
-    const channel = interaction.options.getChannel('channel')
-      ? interaction.options.getChannel('channel')
-      : interaction.channel;
+    const ephemeralnotices = Boolean(interaction.options.getBoolean('ephemeralnotices'));
+    const channel = (interaction.options.getChannel('channel') as GuildTextBasedChannel | null) ?? interaction.channel!
     const message = interaction.options.getString('message') ? interaction.options.getString('message') : null;
     await interaction.deferReply({ ephemeral: ephemeralnotices });
 
-    if (!channel?.isTextBased()) return interaction.editReply(getString('commands.say.channelnottextbased'));
     if (message == null) return interaction.editReply(getString('commands.say.mustprovidemessage'));
 
     const dbGuild = await client.database.guilds.findOne({ development: true });
@@ -48,23 +52,23 @@ export const command: PojavChatInputCommand = {
     logsChannel.send({
       embeds: [
         new EmbedBuilder()
-          .setTitle('Say command usage')
-          .setDescription('A user ran the say command!')
+          .setTitle(getString("commands.say.saycommandusageembedtitle"))
+          .setDescription(getString("commands.say.saycommandusagedembedescription"))
           .setColor('Green')
           .setFields([
             {
-              name: 'User',
+              name: getString("commands.say.user"),
               value: `<@${interaction.user.id}>`,
             },
             {
-              name: 'Message',
+              name: getString("commands.say.message"),
               value: message,
             },
           ]),
       ],
     });
 
-    await channel?.send({ content: message, reply: { messageReference: interaction.options.getString('replyto')! } });
+    await channel.send({ content: message, reply: { messageReference: interaction.options.getString('replyto')! } });
     return interaction.editReply(getString('commands.say.sendsuccess'));
   },
 };
