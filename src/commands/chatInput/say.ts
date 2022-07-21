@@ -21,7 +21,8 @@ export const command: PojavChatInputCommand = {
           ChannelType.GuildPrivateThread,
           ChannelType.GuildPublicThread,
           ChannelType.GuildText,
-          ChannelType.GuildVoice)
+          ChannelType.GuildVoice
+        )
         .setRequired(false)
     )
     .addBooleanOption((option) =>
@@ -39,7 +40,7 @@ export const command: PojavChatInputCommand = {
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageMessages),
   async listener(interaction, { getString, client }) {
     const ephemeralnotices = Boolean(interaction.options.getBoolean('ephemeralnotices'));
-    const channel = (interaction.options.getChannel('channel') as GuildTextBasedChannel | null) ?? interaction.channel!
+    const channel = (interaction.options.getChannel('channel') as GuildTextBasedChannel | null) ?? interaction.channel!;
     const message = interaction.options.getString('message') ? interaction.options.getString('message') : null;
     await interaction.deferReply({ ephemeral: ephemeralnotices });
 
@@ -52,16 +53,16 @@ export const command: PojavChatInputCommand = {
     logsChannel.send({
       embeds: [
         new EmbedBuilder()
-          .setTitle(getString("commands.say.saycommandusageembedtitle"))
-          .setDescription(getString("commands.say.saycommandusagedembedescription"))
+          .setTitle(getString('commands.say.saycommandusageembedtitle'))
+          .setDescription(getString('commands.say.saycommandusagedembedescription'))
           .setColor('Green')
           .setFields([
             {
-              name: getString("commands.say.user"),
+              name: getString('commands.say.user'),
               value: `<@${interaction.user.id}>`,
             },
             {
-              name: getString("commands.say.message"),
+              name: getString('commands.say.message'),
               value: message,
             },
           ]),
