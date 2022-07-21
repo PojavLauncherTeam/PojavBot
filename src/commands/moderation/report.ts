@@ -17,21 +17,26 @@ export const command: PojavChatInputCommand = {
     .addStringOption((option) => option.setName('reason').setDescription('Reason of report').setRequired(true))
     .addAttachmentOption((option) => option.setName('proof').setDescription('Proof for report. Must be image or gif')),
 
-  async listener(interaction, { client }) {
+  async listener(interaction, { client, getString }) {
     const user = interaction.options.getUser('user', true);
+    const member = await interaction.guild.members.fetch(user);
     const reason = interaction.options.getString('reason', true);
     const proof = interaction.options.getAttachment('proof');
 
-    const embed = new EmbedBuilder().setTitle(`Do you really want to report ${user.username}?`).setFields([
-      {
-        name: 'Reason',
-        value: reason,
-      },
-    ]);
+    const embed = new EmbedBuilder()
+      .setTitle(
+        getString('commands.report.doYouWantTitle', { variables: { user: member?.displayName || user.username } })
+      )
+      .setFields([
+        {
+          name: getString('commands.report.reason'),
+          value: reason,
+        },
+      ]);
     if (proof) embed.setImage(proof.url);
     const buttons = new ActionRowBuilder<ButtonBuilder>().addComponents(
-      new ButtonBuilder().setCustomId('yes').setLabel('Yes').setStyle(ButtonStyle.Success),
-      new ButtonBuilder().setCustomId('no').setLabel('No').setStyle(ButtonStyle.Danger)
+      new ButtonBuilder().setCustomId('yes').setLabel(getString('commands.report.yes')).setStyle(ButtonStyle.Success),
+      new ButtonBuilder().setCustomId('no').setLabel(getString('commands.report.no')).setStyle(ButtonStyle.Danger)
     );
     const message = await interaction.reply({
       embeds: [embed],
@@ -45,19 +50,19 @@ export const command: PojavChatInputCommand = {
     collector.once('collect', async (buttonInteraction) => {
       if (buttonInteraction.customId == 'yes') {
         const embed = new EmbedBuilder()
-          .setTitle('New user report')
+          .setTitle(getString('commands.report.new_report'))
           .setThumbnail(user.displayAvatarURL())
           .setFields([
             {
-              name: 'Author',
+              name: getString('commands.report.author'),
               value: `${interaction.user} ${Formatters.inlineCode(interaction.user.tag)} (${interaction.user.id})`,
             },
             {
-              name: 'User',
+              name: getString('commands.report.user'),
               value: `${user} ${Formatters.inlineCode(user.tag)} (${user.id})`,
             },
             {
-              name: 'Reason',
+              name: getString('commands.report.reason'),
               value: `${reason}`,
             },
           ]);
@@ -69,18 +74,18 @@ export const command: PojavChatInputCommand = {
         logsChannel.send({ embeds: [embed] });
 
         await buttonInteraction.update({
-          content: 'Your report has been successfully sent',
+          content: getString('commands.report.sent'),
           embeds: [],
           components: [],
         });
       } else if (buttonInteraction.customId == 'no')
-        await buttonInteraction.update({ content: 'Your report has been canceled', embeds: [], components: [] });
+        await buttonInteraction.update({ content: getString('commands.report.cancelled'), embeds: [], components: [] });
     });
 
     collector.once('end', async (collected) => {
       if (collected.size < 1)
         await interaction.editReply({
-          content: "You haven't clicked a button for too long. Your report has been canceled",
+          content: getString('commands.report.timeout'),
           embeds: [],
           components: [],
         });

@@ -8,7 +8,7 @@ export const command: PojavChatInputCommand = {
     .setDescription('Gives information about user')
     .addUserOption((option) => option.setName('user').setDescription('User to give information about')),
 
-  async listener(interaction) {
+  async listener(interaction, { getString }) {
     await interaction.deferReply();
 
     const user = interaction.options.getUser('user') || interaction.user;
@@ -22,46 +22,44 @@ export const command: PojavChatInputCommand = {
       .setDescription(`${user} ${Formatters.inlineCode(user.tag)} (${user.id})`)
       .setThumbnail(member?.displayAvatarURL({ size: 4096 }) || user.displayAvatarURL({ size: 4096 }))
       .setColor(member?.displayColor || Colors.LightGrey);
-
+    console.log(member?.presence?.status);
     if (member) {
       let emoji: string;
-      let statusName: string;
-
+      const statusName = member?.presence?.status || 'offline';
       switch (member?.presence?.status) {
         case 'online':
           emoji = '<:online:999281115607085066>';
-          statusName = 'Online';
           break;
         case 'idle':
           emoji = '<:idle:999281100272713749>';
-          statusName = 'Idle';
           break;
         case 'dnd':
           emoji = '<:dnd:999281147706097747>';
-          statusName = 'Do Not Disturb';
           break;
         default:
           emoji = '<:offline:999281170921553960>';
-          statusName = 'Offline';
       }
 
       const platforms = member?.presence?.clientStatus ? Object.keys(member?.presence?.clientStatus) : [];
-      const status = `${emoji} ${statusName} ${(() =>
-        platforms.length ? `(${platforms.map((platform) => platform).join(', ')})` : ' ')()}`;
 
-      embed.addFields([{ name: 'Status', value: status }]);
+      const status = `${emoji} ${getString(`commands.userinfo.status.${statusName}`)} ${(() =>
+        platforms.length
+          ? `(${platforms.map((platform) => getString(`commands.userinfo.platform.${platform}`)).join(', ')})`
+          : '')()}`;
+
+      embed.addFields([{ name: getString('commands.userinfo.status'), value: status }]);
     }
 
     embed.addFields([
       {
-        name: 'Created the account',
+        name: getString('commands.userinfo.createdAccount'),
         value: makeFormattedTime(user.createdTimestamp),
       },
     ]);
     if (member?.joinedTimestamp)
       embed.addFields([
         {
-          name: 'Joined the server',
+          name: getString('commands.userinfo.joinedServer'),
           value: makeFormattedTime(member.joinedTimestamp),
         },
       ]);
@@ -69,7 +67,7 @@ export const command: PojavChatInputCommand = {
     if (member?.premiumSinceTimestamp)
       embed.addFields([
         {
-          name: 'Server Booster since',
+          name: getString('commands.userinfo.serverBooster'),
           value: makeFormattedTime(member.premiumSinceTimestamp),
         },
       ]);
@@ -81,7 +79,7 @@ export const command: PojavChatInputCommand = {
     if (roles?.length)
       embed.addFields([
         {
-          name: `Roles (${roles.length}) `,
+          name: `${getString('commands.userinfo.roles')} (${roles.length}) `,
           value: roles.join(', '),
         },
       ]);
@@ -94,7 +92,7 @@ export const command: PojavChatInputCommand = {
         if (custom.emoji) status += `${custom.emoji} `;
         if (custom.state) status += custom.state;
 
-        embed.addFields([{ name: 'Custom Status', value: status }]);
+        embed.addFields([{ name: getString('commands.userinfo.custom_status'), value: status }]);
       }
     }
 
