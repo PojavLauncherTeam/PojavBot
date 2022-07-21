@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
 import type { PojavChatInputCommand } from '..';
 
 export const command: PojavChatInputCommand = {
@@ -10,12 +11,10 @@ export const command: PojavChatInputCommand = {
     )
     // .addStringOption(option => option.setName("embeds").setDescription("Embeds to include").setRequired(false))
     .addChannelOption((option) =>
-      option.setName('channel').setDescription('The target channel (default is the current channel)').setRequired(false)
-    )
-    .addBooleanOption((option) =>
       option
-        .setName('showexecutorname')
-        .setDescription('Show who used this command to send a message on the mssage')
+        .setName('channel')
+        .setDescription('The target channel (default is the current channel)')
+        .addChannelTypes(ChannelType.GuildText)
         .setRequired(false)
     )
     .addBooleanOption((option) =>
@@ -29,26 +28,41 @@ export const command: PojavChatInputCommand = {
         .setName('replyto')
         .setDescription('Message id of target reply if you need the message to be a reply')
         .setRequired(false)
-    ),
-  async listener(interaction, { getString }) {
+    )
+    .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageMessages),
+  async listener(interaction, { getString, client }) {
     const ephemeralnotices = interaction.options.getBoolean('ephemeralnotices') ? true : false;
     const channel = interaction.options.getChannel('channel')
       ? interaction.options.getChannel('channel')
       : interaction.channel;
-    const message =
-      interaction.options.getBoolean('showexecutorname') && interaction.options.getString('message')
-        ? interaction.options.getString('message') + `\n\n(Sent by ${interaction.member}`
-        : interaction.options.getBoolean('showexecutorname')
-        ? `(Sent by ${interaction.member})`
-        : '';
+    const message = interaction.options.getString('message') ? interaction.options.getString('message') : null;
     await interaction.deferReply({ ephemeral: ephemeralnotices });
 
-    if (!interaction.member.permissions.has('ManageMessages'))
-      return interaction.editReply(getString('commands.say.nopermission'));
-    if (interaction.options.getBoolean('showexecutorname') && !interaction.member.permissions.has('Administrator'))
-      return interaction.editReply(getString('commands.say.nopermissionexecutornamehide'));
     if (!channel?.isTextBased()) return interaction.editReply(getString('commands.say.channelnottextbased'));
-    if (message == '') return interaction.editReply(getString('commands.say.mustprovidemessage'));
+    if (message == null) return interaction.editReply(getString('commands.say.mustprovidemessage'));
+
+    const dbGuild = await client.database.guilds.findOne({ development: true });
+    if (!dbGuild?.logsChannelId) return;
+    const logsChannel = client.channels.resolve(dbGuild.logsChannelId);
+    if (logsChannel?.type !== ChannelType.GuildText) return;
+    logsChannel.send({
+      embeds: [
+        new EmbedBuilder()
+          .setTitle('Say command usage')
+          .setDescription('A user ran the say command!')
+          .setColor('Green')
+          .setFields([
+            {
+              name: 'User',
+              value: `<@${interaction.user.id}>`,
+            },
+            {
+              name: 'Message',
+              value: message,
+            },
+          ]),
+      ],
+    });
 
     await channel?.send({ content: message, reply: { messageReference: interaction.options.getString('replyto')! } });
     return interaction.editReply(getString('commands.say.sendsuccess'));
