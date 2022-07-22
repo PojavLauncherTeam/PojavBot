@@ -6,9 +6,7 @@ export const command: PojavChatInputCommand = {
   data: new SlashCommandBuilder()
     .setName('say')
     .setDescription('Send a message')
-    .addStringOption((option) =>
-      option.setName('message').setDescription('The message (required if no embed)').setRequired(false)
-    )
+    .addStringOption((option) => option.setName('message').setDescription('The message').setRequired(true))
     // .addStringOption(option => option.setName("embeds").setDescription("Embeds to include").setRequired(false))
     .addChannelOption((option) =>
       option
@@ -46,7 +44,7 @@ export const command: PojavChatInputCommand = {
 
     if (message == null) return interaction.editReply(getString('commands.say.mustprovidemessage'));
 
-    const dbGuild = await client.database.guilds.findOne({ development: true });
+    const dbGuild = await client.database.guilds.findOne({ id: interaction.guild.id });
     if (!dbGuild?.logsChannelId) return;
     const logsChannel = client.channels.resolve(dbGuild.logsChannelId);
     if (logsChannel?.type !== ChannelType.GuildText) return;
