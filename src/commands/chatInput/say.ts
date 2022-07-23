@@ -13,13 +13,11 @@ export const command: PojavChatInputCommand = {
         .setName('channel')
         .setDescription('The target channel (default is the current channel)')
         .addChannelTypes(
-          ChannelType.GuildText,
           ChannelType.GuildNews,
           ChannelType.GuildNewsThread,
           ChannelType.GuildPrivateThread,
           ChannelType.GuildPublicThread,
-          ChannelType.GuildText,
-          ChannelType.GuildVoice
+          ChannelType.GuildText
         )
         .setRequired(false)
     )
