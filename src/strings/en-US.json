@@ -11,7 +11,6 @@
   "commands.tags.editingTag": "Editing the {name} tag",
   "commands.tags.keywords": "Keywords (Separate with a comma)",
   "commands.tags.name": "Name",
-  "commands.say.channelnottextbased": "Specified channel is not a text-based channel.",
   "commands.say.mustprovidemessage": "You must provide a message.",
   "commands.say.sendsuccess": "Successfully sent message.",
   "commands.say.saycommandusageembedtitle": "Say command usage",
