@@ -3,6 +3,7 @@ import type { GetStringFunction } from '../util/LocalizationManager';
 import type { PojavClient } from '../util/PojavClient';
 
 export * as status from './chatInput/status';
+export * as say from './chatInput/say';
 export * as tag from './chatInput/tag';
 export * as tags from './chatInput/tags';
 export * as userinfo from './chatInput/userinfo';
