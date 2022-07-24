@@ -19,7 +19,7 @@
   "dependencies": {
     "@messageformat/core": "^3.0.1",
     "@sapphire/time-utilities": "^1.7.5",
-    "discord.js": "^14.0.1",
+    "discord.js": "^14.0.3",
     "dotenv": "^16.0.1",
     "mongodb": "^4.8.0"
   },
