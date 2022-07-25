@@ -3,7 +3,7 @@
   "commands.status.onlineSince": "Online since",
   "commands.status.ping": "{ms, number, integer}ms",
   "commands.status.status": "Status",
-  "commands.status.wsPing": "WebSoket ping",
+  "commands.status.wsPing": "WebSocket ping",
   "commands.tag.suggestion": "{target, select, user {_Tag suggestion for {user}:_\n} other {}}{content}",
   "commands.tags.content": "Content",
   "commands.tags.creatingTag": "Creating a new tag",
