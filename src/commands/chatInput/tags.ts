@@ -8,7 +8,7 @@ export const command: PojavChatInputCommand = {
     .setName('tags')
     .setDescription('Manages tags')
     .setDMPermission(false)
-    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addSubcommand((subcommand) => subcommand.setName('create').setDescription('Creates a new tag'))
     .addSubcommand((subcommand) =>
       subcommand
