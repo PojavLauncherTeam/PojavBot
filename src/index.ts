@@ -5,7 +5,7 @@ import { PojavClient } from './util/PojavClient';
 disableValidators();
 
 const client = new PojavClient({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences],
   partials: [Partials.GuildMember],
 });
 

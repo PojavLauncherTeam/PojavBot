@@ -6,6 +6,8 @@ export * as status from './chatInput/status';
 export * as say from './chatInput/say';
 export * as tag from './chatInput/tag';
 export * as tags from './chatInput/tags';
+export * as userinfo from './chatInput/userinfo';
+export * as report from './chatInput/report';
 
 export interface PojavChatInputCommand {
   data: Pick<SlashCommandBuilder, 'toJSON'>;
