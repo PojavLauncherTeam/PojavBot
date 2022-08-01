@@ -21,7 +21,7 @@
     "@sapphire/time-utilities": "^1.7.5",
     "discord.js": "^14.1.2",
     "dotenv": "^16.0.1",
-    "mongodb": "^4.8.0"
+    "mongodb": "^4.8.1"
   },
   "devDependencies": {
     "@types/node": "^16.11.47",
