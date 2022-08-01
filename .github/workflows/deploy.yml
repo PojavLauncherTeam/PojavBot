@@ -1,0 +1,35 @@
+name: Deploying
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  deploy:
+    name: Deployment to Heroky
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'PojavLauncherTeam' }}
+    steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.10.0
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Node v16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: yarn
+
+      - name: Install dependencies and compile code
+        run: yarn --immutable
+
+      - name: Deployment to Heroky
+        uses: AkhileshNS/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: pojavbot
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
