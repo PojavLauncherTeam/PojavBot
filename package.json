@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@messageformat/core": "^3.0.1",
-    "@sapphire/time-utilities": "^1.7.5",
+    "@sapphire/time-utilities": "^1.7.6",
     "discord.js": "^14.3.0",
     "dotenv": "^16.0.1",
     "mongodb": "^4.8.1"
