@@ -1,5 +1,11 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { ActionRowBuilder, ModalBuilder, PermissionFlagsBits, TextInputBuilder, TextInputStyle } from 'discord.js';
+import {
+  ActionRowBuilder,
+  ModalBuilder,
+  PermissionFlagsBits,
+  SlashCommandBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+} from 'discord.js';
 import type { PojavChatInputCommand } from '..';
 import { findTag } from '../../util/Util';
 
@@ -58,20 +64,20 @@ export const command: PojavChatInputCommand = {
         new TextInputBuilder()
           .setCustomId('content')
           .setLabel(getString('commands.tags.content'))
-          .setMaxLength(2000)
+          .setMaxLength(2_000)
           .setMinLength(1)
           .setStyle(TextInputStyle.Paragraph)
       );
       modal.setComponents(name, keywords, content);
 
-      interaction.showModal(modal);
+      await interaction.showModal(modal);
     } else if (subcommand === 'delete') {
       const tag = await findTag(interaction, client);
       if (!tag) return;
 
       const { name } = tag;
       await client.database.tags.findOneAndDelete({ name, guildId });
-      interaction.reply({
+      await interaction.reply({
         content: getString('commands.tags.deleted', { variables: { name } }),
         ephemeral: true,
       });
@@ -104,13 +110,13 @@ export const command: PojavChatInputCommand = {
           .setCustomId('content')
           .setLabel(getString('commands.tags.content'))
           .setValue(tag.content)
-          .setMaxLength(2000)
+          .setMaxLength(2_000)
           .setMinLength(1)
           .setStyle(TextInputStyle.Paragraph)
       );
       modal.setComponents(name, keywords, content);
 
-      interaction.showModal(modal);
+      await interaction.showModal(modal);
     }
   },
 };

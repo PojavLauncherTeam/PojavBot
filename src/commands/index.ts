@@ -9,15 +9,12 @@ export * as tags from './chatInput/tags';
 export * as userinfo from './chatInput/userinfo';
 export * as report from './chatInput/report';
 
-export interface PojavChatInputCommand {
+export type PojavChatInputCommand = {
   data: Pick<SlashCommandBuilder, 'toJSON'>;
-  listener(
-    interaction: ChatInputCommandInteraction<'cached'>,
-    options: PojavChatInputCommandOptions
-  ): Awaitable<unknown>;
-}
+  listener(interaction: ChatInputCommandInteraction<'cached'>, options: PojavChatInputCommandOptions): Awaitable<void>;
+};
 
-export interface PojavChatInputCommandOptions {
+export type PojavChatInputCommandOptions = {
   client: PojavClient;
   getString: GetStringFunction;
-}
+};

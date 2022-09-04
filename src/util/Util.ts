@@ -1,6 +1,13 @@
-import { ChatInputCommandInteraction, Formatters, ModalSubmitInteraction, type Snowflake } from 'discord.js';
+import type { Channel, TextChannel, User } from 'discord.js';
+import {
+  type ChatInputCommandInteraction,
+  inlineCode,
+  type ModalSubmitInteraction,
+  type Snowflake,
+  time,
+} from 'discord.js';
 import { PojavLocale } from '../util/LocalizationManager';
-import type { TagSchema } from './DatabaseClient';
+import type { GuildSchema, TagSchema } from './DatabaseClient';
 import type { PojavClient } from './PojavClient';
 
 export async function findTag(interaction: ChatInputCommandInteraction<'cached'>, client: PojavClient) {
@@ -8,8 +15,8 @@ export async function findTag(interaction: ChatInputCommandInteraction<'cached'>
   const tag = await client.database.tags.findOne({ name: query, guildId: interaction.guildId });
 
   if (!tag) {
-    interaction.reply({
-      content: `Could not find a tag by your query: ${Formatters.inlineCode(query)}`,
+    await interaction.reply({
+      content: `Could not find a tag by your query: ${inlineCode(query)}`,
       ephemeral: true,
     });
     return null;
@@ -18,9 +25,35 @@ export async function findTag(interaction: ChatInputCommandInteraction<'cached'>
   return tag;
 }
 
-export function makeFormattedTime(time: Date | number = new Date()): `<t:${bigint}> (<t:${bigint}:R>)` {
-  const date = typeof time === 'number' ? new Date(Math.floor(time)) : time;
-  return `${Formatters.time(date)} (${Formatters.time(date, 'R')})`;
+export async function getChannel<T extends Channel>(
+  client: PojavClient,
+  getChannelId: (dbGuild: GuildSchema) => Snowflake | undefined,
+  guildId?: Snowflake
+) {
+  const dbGuild = guildId
+    ? await client.database.guilds.findOne({ guildId })
+    : await client.database.guilds.findOne({ development: true });
+  if (!dbGuild) return null;
+
+  const channelId = getChannelId(dbGuild);
+  if (!channelId) return null;
+
+  const channel = client.channels.cache.get(channelId) as T | undefined;
+  if (!channel) return null;
+  return channel;
+}
+
+export async function getLogsChannel(client: PojavClient, guildId?: Snowflake) {
+  return getChannel<TextChannel>(client, (dbGuild) => dbGuild.logsChannelId, guildId);
+}
+
+export async function getReportsChannel(client: PojavClient, guildId: Snowflake) {
+  return getChannel<TextChannel>(client, (dbGuild) => dbGuild.reportsChannelId, guildId);
+}
+
+export function makeFormattedTime(inputTime: Date | number = new Date()) {
+  const date = typeof inputTime === 'number' ? new Date(Math.floor(inputTime)) : inputTime;
+  return `${time(date)} (${time(date, 'R')})`;
 }
 
 export function makeTagData(interaction: ModalSubmitInteraction<'cached'>) {
@@ -36,6 +69,10 @@ export function makeTagData(interaction: ModalSubmitInteraction<'cached'>) {
   if (keywords.length) data.keywords = keywords;
 
   return data;
+}
+
+export function makeUserMention(user: User) {
+  return `${user} ${inlineCode(user.tag)} (${user.id})`;
 }
 
 export function makeUserURL(id: Snowflake) {

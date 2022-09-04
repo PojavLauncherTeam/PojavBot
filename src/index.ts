@@ -9,4 +9,4 @@ const client = new PojavClient({
   partials: [Partials.GuildMember],
 });
 
-client.login();
+await client.login();

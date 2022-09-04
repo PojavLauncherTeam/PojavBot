@@ -6,7 +6,7 @@ export * as guildMemberRemove from './guildMemberRemove';
 export * as interactionCreate from './interactionCreate';
 export * as ready from './ready';
 
-export interface PojavEvent<K extends keyof ClientEvents> {
+export type PojavEvent<K extends keyof ClientEvents> = {
+  listener(client: PojavClient, ...args: ClientEvents[K]): Awaitable<void>;
   once?: true;
-  listener(client: PojavClient, ...args: ClientEvents[K]): Awaitable<unknown>;
-}
+};

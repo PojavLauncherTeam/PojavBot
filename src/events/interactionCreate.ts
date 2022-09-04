@@ -1,11 +1,11 @@
-import { ChannelType, Colors, EmbedBuilder, InteractionType, Formatters } from 'discord.js';
+import process from 'node:process';
+import { inspect } from 'node:util';
+import { Colors, EmbedBuilder, InteractionType, codeBlock } from 'discord.js';
 import type { UpdateFilter } from 'mongodb';
-import { inspect } from 'util';
-import type { PojavEvent } from '.';
-import type { GetStringFunctionOptions } from '../util/LocalizationManager';
 import type { TagSchema } from '../util/DatabaseClient';
-import type { PojavStringsFile } from '../util/LocalizationManager';
-import { makeTagData, resolveLocale } from '../util/Util';
+import type { GetStringFunctionOptions, PojavStringsFile } from '../util/LocalizationManager';
+import { getLogsChannel, makeTagData, resolveLocale } from '../util/Util';
+import type { PojavEvent } from '.';
 
 export const event: PojavEvent<'interactionCreate'> = {
   async listener(client, interaction) {
@@ -34,10 +34,11 @@ export const event: PojavEvent<'interactionCreate'> = {
         for (const tag of tags) {
           const { name } = tag;
           const exactQuery =
-            tag.name.toLowerCase() === lowerValue || tag.keywords?.find((s) => s.toLowerCase() === lowerValue);
+            tag.name.toLowerCase() === lowerValue ||
+            tag.keywords?.find((keyword) => keyword.toLowerCase() === lowerValue);
           const queryMatch =
             tag.name.toLowerCase().includes(lowerValue) ||
-            tag.keywords?.find((s) => s.toLowerCase().includes(lowerValue));
+            tag.keywords?.find((keyword) => keyword.toLowerCase().includes(lowerValue));
           const contentMatch = tag.content?.toLowerCase().includes(lowerValue);
           if (exactQuery) {
             exactQueries.push({ name: `✅ ${name}`, value: name });
@@ -49,7 +50,7 @@ export const event: PojavEvent<'interactionCreate'> = {
         }
 
         const results: { name: string; value: string }[] = [...exactQueries, ...queryMatches, ...contentMatches];
-        interaction.respond(results.slice(0, 25));
+        await interaction.respond(results.slice(0, 25));
       }
     } else if (interaction.isChatInputCommand()) {
       const { commandName } = interaction;
@@ -60,11 +61,8 @@ export const event: PojavEvent<'interactionCreate'> = {
         await comamnd.listener(interaction, { client, getString });
       } catch (error) {
         if (process.env.NODE_ENV === 'production') {
-          const dbGuild = await client.database.guilds.findOne({ development: true });
-          if (!dbGuild?.logsChannelId) return;
-
-          const logsChannel = client.channels.resolve(dbGuild.logsChannelId);
-          if (logsChannel?.type !== ChannelType.GuildText) return;
+          const logsChannel = await getLogsChannel(client);
+          if (!logsChannel) return;
 
           const embed = new EmbedBuilder()
             .setTitle(`An unexpected error occurred while running a command`)
@@ -75,13 +73,14 @@ export const event: PojavEvent<'interactionCreate'> = {
               },
               {
                 name: 'Error',
-                value: Formatters.codeBlock(inspect(error).substring(0, 1017)),
+                value: codeBlock(inspect(error).slice(0, 1_017)),
               },
             ])
             .setColor(Colors.Red);
 
           await logsChannel.send({ embeds: [embed] });
         }
+
         console.log(error);
       }
     } else if (interaction.type === InteractionType.ModalSubmit) {
@@ -90,22 +89,23 @@ export const event: PojavEvent<'interactionCreate'> = {
       if (action === 'create-tag') {
         const name = interaction.fields.getTextInputValue('name');
         const existing = await client.database.tags.findOne({ name, guildId });
-        if (existing)
-          return interaction.reply({
+        if (existing) {
+          return void interaction.reply({
             content: getString('events.interactionCreate.tagExists', { variables: { name } }),
             ephemeral: true,
           });
+        }
 
         const tagData = makeTagData(interaction);
         await client.database.tags.insertOne(tagData);
-        interaction.reply({
+        await interaction.reply({
           content: getString('events.interactionCreate.created', { variables: { name } }),
           ephemeral: true,
         });
       } else if (action === 'edit-tag') {
         const existing = await client.database.tags.findOne({ name: data!, guildId });
         if (!existing)
-          return interaction.reply({
+          return void interaction.reply({
             content: getString('events.interactionCreate.tagNotExists', {
               variables: { name: data! },
             }),
@@ -117,7 +117,7 @@ export const event: PojavEvent<'interactionCreate'> = {
           { name: data!, guildId },
           { $set: tagData as UpdateFilter<TagSchema> }
         );
-        interaction.reply({
+        await interaction.reply({
           content: getString('events.interactionCreate.tagEdited', { variables: { name: tagData.name } }),
           ephemeral: true,
         });

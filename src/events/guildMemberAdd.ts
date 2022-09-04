@@ -1,9 +1,9 @@
 import { Time } from '@sapphire/time-utilities';
 import { type ColorResolvable, BitField, ChannelType, Colors, EmbedBuilder } from 'discord.js';
-import type { PojavEvent } from '.';
 import { UserFlags } from '../util/DatabaseClient';
 import type { GetStringFunctionOptions, PojavStringsFile } from '../util/LocalizationManager';
 import { makeFormattedTime, makeUserURL, resolveLocale } from '../util/Util';
+import type { PojavEvent } from '.';
 
 export const event: PojavEvent<'guildMemberAdd'> = {
   async listener(client, member) {
@@ -65,9 +65,11 @@ export const event: PojavEvent<'guildMemberAdd'> = {
       if (developerRoleId && bitField.has(UserFlags.Developer)) {
         roleIdsToAdd.push(developerRoleId);
       }
+
       if (contributorRoleId && bitField.has(UserFlags.Contributor)) {
         roleIdsToAdd.push(contributorRoleId);
       }
+
       if (vipRoleId && bitField.has(UserFlags.VIP)) {
         roleIdsToAdd.push(vipRoleId);
       }

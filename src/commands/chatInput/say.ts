@@ -1,71 +1,60 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChannelType, EmbedBuilder, GuildTextBasedChannel, PermissionsBitField } from 'discord.js';
+import type { MessageOptions, GuildTextBasedChannel } from 'discord.js';
+import { PermissionFlagsBits, ChannelType, SlashCommandBuilder } from 'discord.js';
 import type { PojavChatInputCommand } from '..';
 
 export const command: PojavChatInputCommand = {
   data: new SlashCommandBuilder()
     .setName('say')
-    .setDescription('Send a message')
-    .addStringOption((option) => option.setName('message').setDescription('The message').setRequired(true))
-    // .addStringOption(option => option.setName("embeds").setDescription("Embeds to include").setRequired(false))
+    .setDescription('Send the message')
+    .addStringOption((option) => option.setName('content').setDescription('Content of the message'))
+    .addAttachmentOption((option) => option.setName('attachemnt').setDescription('Attachment of the message'))
     .addChannelOption((option) =>
       option
         .setName('channel')
-        .setDescription('The target channel (default is the current channel)')
+        .setDescription('Channel to send the message in')
         .addChannelTypes(
           ChannelType.GuildNews,
           ChannelType.GuildNewsThread,
           ChannelType.GuildPrivateThread,
           ChannelType.GuildPublicThread,
-          ChannelType.GuildText
+          ChannelType.GuildText,
+          ChannelType.GuildVoice
         )
-        .setRequired(false)
     )
-    .addBooleanOption((option) =>
-      option
-        .setName('ephemeralnotices')
-        .setDescription('If true then error/success message only shown to you (ephmeral)')
-        .setRequired(false)
-    )
-    .addStringOption((option) =>
-      option
-        .setName('replyto')
-        .setDescription('Message id of target reply if you need the message to be a reply')
-        .setRequired(false)
-    )
-    .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageMessages),
-  async listener(interaction, { getString, client }) {
-    const ephemeralnotices = Boolean(interaction.options.getBoolean('ephemeralnotices'));
+    .addStringOption((option) => option.setName('replyto').setDescription('Message id to reply to')),
+  async listener(interaction, { client }) {
+    const content = interaction.options.getString('content');
+    const attachemnt = interaction.options.getAttachment('attachemnt');
     const channel = (interaction.options.getChannel('channel') as GuildTextBasedChannel | null) ?? interaction.channel!;
-    const message = interaction.options.getString('message') ? interaction.options.getString('message') : null;
-    await interaction.deferReply({ ephemeral: ephemeralnotices });
+    const replyto = interaction.options.getString('replyto');
 
-    if (message == null) return interaction.editReply(getString('commands.say.mustprovidemessage'));
+    if (!content || !attachemnt) {
+      // TODO: Add to strings
+      return void (await interaction.reply({
+        content: 'One of content or attachment should be provided',
+      }));
+    }
 
-    const dbGuild = await client.database.guilds.findOne({ id: interaction.guild.id });
-    if (!dbGuild?.logsChannelId) return;
-    const logsChannel = client.channels.resolve(dbGuild.logsChannelId);
-    if (logsChannel?.type !== ChannelType.GuildText) return;
-    logsChannel.send({
-      embeds: [
-        new EmbedBuilder()
-          .setTitle(getString('commands.say.saycommandusageembedtitle'))
-          .setDescription(getString('commands.say.saycommandusagedembedescription'))
-          .setColor('Green')
-          .setFields([
-            {
-              name: getString('commands.say.user'),
-              value: `<@${interaction.user.id}>`,
-            },
-            {
-              name: getString('commands.say.message'),
-              value: message,
-            },
-          ]),
-      ],
+    const messageOtions: MessageOptions = {};
+    if (content) messageOtions.content = content;
+    if (attachemnt) messageOtions.files = [attachemnt];
+    if (replyto) messageOtions.reply = { messageReference: replyto, failIfNotExists: false };
+
+    if (
+      !channel.permissionsFor(client.user)!.has([PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel])
+    ) {
+      // TODO: Add to strings
+      return void (await interaction.reply({
+        content: "I don't have perms to send message in provided channel",
+        ephemeral: true,
+      }));
+    }
+
+    await channel.send(messageOtions);
+
+    await interaction.reply({
+      content: 'Sent',
+      ephemeral: true,
     });
-
-    await channel.send({ content: message, reply: { messageReference: interaction.options.getString('replyto')! } });
-    return interaction.editReply(getString('commands.say.sendsuccess'));
   },
 };

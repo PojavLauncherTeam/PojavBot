@@ -20,7 +20,7 @@ export const command: PojavChatInputCommand = {
     if (!tag) return;
 
     const target = interaction.options.getUser('target');
-    interaction.reply(
+    await interaction.reply(
       getString('commands.tag.suggestion', {
         variables: { target: target ? 'user' : 'other', user: `${target}`, content: tag.content },
       })

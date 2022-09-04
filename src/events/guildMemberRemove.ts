@@ -1,7 +1,7 @@
 import { ChannelType, Colors, EmbedBuilder } from 'discord.js';
-import type { PojavEvent } from '.';
 import type { GetStringFunctionOptions, PojavStringsFile } from '../util/LocalizationManager';
 import { makeFormattedTime, makeUserURL, resolveLocale } from '../util/Util';
+import type { PojavEvent } from '.';
 
 export const event: PojavEvent<'guildMemberRemove'> = {
   async listener(client, member) {
@@ -27,6 +27,7 @@ export const event: PojavEvent<'guildMemberRemove'> = {
       .setTitle(getString('events.guildMemberRemove.goodbye'))
       .setDescription(
         getString('global.userInfo', {
+          // eslint-disable-next-line @typescript-eslint/no-base-to-string
           variables: { user: `${member}`, tag: member.user.tag, id: member.id },
         })
       )

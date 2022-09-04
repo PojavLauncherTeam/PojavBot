@@ -1,0 +1,13 @@
+{
+  "root": true,
+  "extends": ["neon/common", "neon/node", "neon/typescript", "neon/prettier"],
+  "parserOptions": {
+    "project": "./tsconfig.eslint.json"
+  },
+  "ignorePatterns": ["**/dist/*"],
+  "rules": {
+    "@typescript-eslint/prefer-literal-enum-member": ["error", { "allowBitwiseExpressions": true }],
+    "consistent-return": "off",
+    "import/extensions": "off"
+  }
+}

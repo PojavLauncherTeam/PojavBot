@@ -22,7 +22,7 @@
   "commands.userinfo.createdAccount": "Создал учётную запись",
   "commands.userinfo.joinedServer": "Присоединился к серверу",
   "commands.userinfo.serverBooster": "Бустер сервера с",
-  "commands.userinfo.roles": "Роли",
+  "commands.userinfo.roles": "Роли ({count})",
   "commands.userinfo.custom_status": "Пользовательский статус",
   "commands.userinfo.status": "Статус",
   "commands.report.doYouWantTitle": "Вы действительно хотите отправить жалобу на {user}?",

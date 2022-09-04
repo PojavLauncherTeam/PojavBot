@@ -4,8 +4,11 @@ import type { PojavLocale } from './LocalizationManager';
 
 export class DatabaseClient {
   public mongo: MongoClient;
+
   public guilds: Collection<GuildSchema>;
+
   public tags: Collection<TagSchema>;
+
   public users: Collection<UserSchema>;
 
   public constructor(url: string, options?: MongoClientOptions) {
@@ -16,31 +19,32 @@ export class DatabaseClient {
   }
 }
 
-interface GuildSchema {
-  id: Snowflake;
-  logsChannelId?: Snowflake;
-  joinLeaveChannelId?: Snowflake;
-  developerRoleId?: Snowflake;
+export type GuildSchema = {
   contributorRoleId?: Snowflake;
-  vipRoleId?: Snowflake;
-  locale?: PojavLocale;
+  developerRoleId?: Snowflake;
   development?: boolean;
-}
-
-export interface TagSchema {
-  name: string;
-  keywords?: string[];
-  guildId: Snowflake;
-  content: string;
-}
-
-interface UserSchema {
   id: Snowflake;
+  joinLeaveChannelId?: Snowflake;
+  locale?: PojavLocale;
+  logsChannelId?: Snowflake;
+  reportsChannelId?: Snowflake;
+  vipRoleId?: Snowflake;
+};
+
+export type TagSchema = {
+  content: string;
+  guildId: Snowflake;
+  keywords?: string[];
+  name: string;
+};
+
+type UserSchema = {
   flags?: string;
-}
+  id: Snowflake;
+};
 
 export enum UserFlags {
-  Developer = 1 << 0,
+  Developer = 1,
   Contributor = 1 << 1,
   VIP = 1 << 2,
 }

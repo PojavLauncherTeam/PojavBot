@@ -22,7 +22,7 @@
   "commands.userinfo.createdAccount": "Created the account",
   "commands.userinfo.joinedServer": "Joined the server",
   "commands.userinfo.serverBooster": "Server Booster since",
-  "commands.userinfo.roles": "Roles",
+  "commands.userinfo.roles": "Roles ({count})",
   "commands.userinfo.custom_status": "Custom Status",
   "commands.userinfo.status": "Status",
   "commands.report.doYouWantTitle": "Do you want to report {user}?",

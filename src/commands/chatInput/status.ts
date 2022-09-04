@@ -1,4 +1,4 @@
-import { type ColorResolvable, EmbedBuilder, Colors, SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, Colors, SlashCommandBuilder } from 'discord.js';
 import type { PojavChatInputCommand } from '..';
 import { makeFormattedTime } from '../../util/Util';
 
@@ -9,14 +9,14 @@ export const command: PojavChatInputCommand = {
     await interaction.deferReply();
     const ping = Date.now() - firstTimestamp;
 
-    let color: ColorResolvable;
+    let color: number;
     if (ping >= 0 && ping < 250) color = Colors.Green;
     else if (ping < 500) color = Colors.Yellow;
     else color = Colors.Red;
 
     const embed = new EmbedBuilder()
       .setTitle(getString('commands.status.status'))
-      .setFields([
+      .setFields(
         {
           name: getString('commands.status.myPing'),
           value: getString('commands.status.ping', { variables: { ms: ping } }),
@@ -31,7 +31,7 @@ export const command: PojavChatInputCommand = {
           name: getString('commands.status.onlineSince'),
           value: makeFormattedTime(client.readyTimestamp),
         },
-      ])
+      )
       .setColor(color);
     await interaction.editReply({ embeds: [embed] });
   },
