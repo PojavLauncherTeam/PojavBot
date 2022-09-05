@@ -1059,10 +1059,10 @@ escape-string-regexp@^4.0.0:
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
   integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
 
-eslint-config-neon@^0.1.32:
-  version "0.1.32"
-  resolved "https://registry.yarnpkg.com/eslint-config-neon/-/eslint-config-neon-0.1.32.tgz#ea3d01407ec077f0c4d7c9540a3a345f22dc97e2"
-  integrity sha512-uEhQVBzpPkNy0m8uOkVmAzHhluiUkx5G6EYa+Pk/kHbByeAGmaSNSXpbZjv4vEdG1CAAZGhL7N9qYi/IRKc/hw==
+eslint-config-neon@^0.1.33:
+  version "0.1.33"
+  resolved "https://registry.yarnpkg.com/eslint-config-neon/-/eslint-config-neon-0.1.33.tgz#ff83d30b75ba65637b8f88328032dcf48bfcc314"
+  integrity sha512-7wuRpdB9RXiqN+axIgyfAxSGNpJjqvI/HK+mqnlNvSWlz8jFBrHr8+N8MI+3EQ+3GGsMoT189PTkXLScuvwSsg==
   dependencies:
     "@angular-eslint/eslint-plugin" "^14.0.3"
     "@angular-eslint/eslint-plugin-template" "^14.0.3"
