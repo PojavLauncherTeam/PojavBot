@@ -6,6 +6,7 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
+    "pull-reset": "git pull && git reset --hard origin/main",
     "compile": "rimraf dist/ && tsc -w",
     "format": "prettier --write . && eslint src --fix",
     "postinstall": "tsc",
@@ -13,7 +14,7 @@
   },
   "repository": "https://github.com/PojavLauncherTeam/PojavBot.git",
   "engines": {
-    "node": ">=16.14 <=16",
+    "node": ">=16.14",
     "yarn": "1.22"
   },
   "dependencies": {
