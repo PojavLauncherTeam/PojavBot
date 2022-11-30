@@ -14,15 +14,12 @@ jobs:
         uses: styfle/cancel-workflow-action@0.10.0
         with:
           access_token: ${{ github.token }}
-
-      - name: Checkout repository
-        run: |
-          cd /home/kremix/PojavBot
-          git pull
-
+          
       - name: Deployment
         env:
           password: ${{ secrets.BBS_SECRET }}
         run: |
-          yarn compile
+          cd /home/kremix/PojavBot
+          yarn pull-reset
+          yarn
           echo $password | sudo -S systemctl restart PojavBot
