@@ -16,13 +16,13 @@ jobs:
           access_token: ${{ github.token }}
 
       - name: Checkout repository
-        runs: |
+        run: |
           cd /home/kremix/PojavBot
           git pull
 
       - name: Deployment
         env:
           password: ${{ secrets.BBS_SECRET }}
-        runs: |
+        run: |
           yarn compile
           echo $password | sudo -S systemctl restart PojavBot
