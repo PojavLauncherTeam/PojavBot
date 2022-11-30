@@ -7,7 +7,7 @@ on:
 jobs:
   deploy:
     name: Deployment
-    runs-on: ubuntu-latest
+    runs-on: BBS
     if: ${{ github.repository_owner == 'PojavLauncherTeam' }}
     steps:
       - name: Cancel previous runs
@@ -16,11 +16,13 @@ jobs:
           access_token: ${{ github.token }}
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        runs: |
+          cd /home/kremix/PojavBot
+          git pull
 
       - name: Deployment
-        uses: AkhileshNS/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: pojavbot
-          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+        env:
+          password: ${{ secrets.BBS_SECRET }}
+        runs: |
+          yarn compile
+          echo $password | sudo -S systemctl restart PojavBot
