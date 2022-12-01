@@ -30,7 +30,7 @@ export const command: PojavChatInputCommand = {
         {
           name: getString('commands.status.onlineSince'),
           value: makeFormattedTime(client.readyTimestamp),
-        },
+        }
       )
       .setColor(color);
     await interaction.editReply({ embeds: [embed] });

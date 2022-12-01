@@ -84,7 +84,7 @@ export const command: PojavChatInputCommand = {
         {
           name: getString('commands.report.reason'),
           value: `${reason}`,
-        },
+        }
       )
       .setImage(proofURL);
     const reportsChannel = await getReportsChannel(client, interaction.guildId);

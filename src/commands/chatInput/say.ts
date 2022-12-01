@@ -1,4 +1,4 @@
-import type { MessageOptions, GuildTextBasedChannel } from 'discord.js';
+import type { MessageCreateOptions, GuildTextBasedChannel } from 'discord.js';
 import { PermissionFlagsBits, ChannelType, SlashCommandBuilder } from 'discord.js';
 import type { PojavChatInputCommand } from '..';
 
@@ -13,12 +13,12 @@ export const command: PojavChatInputCommand = {
         .setName('channel')
         .setDescription('Channel to send the message in')
         .addChannelTypes(
-          ChannelType.GuildNews,
-          ChannelType.GuildNewsThread,
-          ChannelType.GuildPrivateThread,
-          ChannelType.GuildPublicThread,
+          ChannelType.AnnouncementThread,
+          ChannelType.GuildAnnouncement,
           ChannelType.GuildText,
-          ChannelType.GuildVoice
+          ChannelType.GuildVoice,
+          ChannelType.PrivateThread,
+          ChannelType.PublicThread
         )
     )
     .addStringOption((option) => option.setName('replyto').setDescription('Message id to reply to')),
@@ -35,7 +35,7 @@ export const command: PojavChatInputCommand = {
       }));
     }
 
-    const messageOtions: MessageOptions = {};
+    const messageOtions: MessageCreateOptions = {};
     if (content) messageOtions.content = content;
     if (attachemnt) messageOtions.files = [attachemnt];
     if (replyto) messageOtions.reply = { messageReference: replyto, failIfNotExists: false };

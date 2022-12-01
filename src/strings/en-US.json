@@ -46,6 +46,7 @@
   "events.guildMemberRemove.goodbye": "Goodbye!",
   "events.guildMemberRemove.leftServer": "Left the server",
   "events.interactionCreate.created": "Tag with name `{name}` successfully created!",
+  "events.interactionCreate.rolesUpdated": "Your roles has been successfully updated! Now you {count, plural, =0 {don't have any roles} one {have # role ({roles})} other {have # roles ({roles})}}.",
   "events.interactionCreate.tagEdited": "Tag with name `{name}` successfully edited!",
   "events.interactionCreate.tagExists": "There's already a tag with name `{name}`",
   "events.interactionCreate.tagNotExists": "There's no a tag with name `{name}`",

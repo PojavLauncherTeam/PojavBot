@@ -1,6 +1,6 @@
 import process from 'node:process';
 import { inspect } from 'node:util';
-import { Colors, EmbedBuilder, InteractionType, codeBlock } from 'discord.js';
+import { Colors, EmbedBuilder, codeBlock } from 'discord.js';
 import type { UpdateFilter } from 'mongodb';
 import type { TagSchema } from '../util/DatabaseClient';
 import type { GetStringFunctionOptions, PojavStringsFile } from '../util/LocalizationManager';
@@ -21,7 +21,7 @@ export const event: PojavEvent<'interactionCreate'> = {
       return client.localizations.getString(key, { locale, variables });
     }
 
-    if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
+    if (interaction.isAutocomplete()) {
       const { commandName } = interaction;
       const value = interaction.options.getFocused();
       if (['tag', 'tags'].includes(commandName)) {
@@ -83,7 +83,7 @@ export const event: PojavEvent<'interactionCreate'> = {
 
         console.log(error);
       }
-    } else if (interaction.type === InteractionType.ModalSubmit) {
+    } else if (interaction.isModalSubmit()) {
       const [action, data] = interaction.customId.split(':') as [string, string | undefined];
 
       if (action === 'create-tag') {
@@ -121,6 +121,39 @@ export const event: PojavEvent<'interactionCreate'> = {
           content: getString('events.interactionCreate.tagEdited', { variables: { name: tagData.name } }),
           ephemeral: true,
         });
+      }
+    } else if (interaction.isStringSelectMenu() && interaction.customId === 'select-menu') {
+      await interaction.deferReply({ ephemeral: true });
+
+      const roles = interaction.component.options
+        .filter((option) => option.value.startsWith('role-add'))
+        .map((option) => option.value.split(':')[1]!);
+      const rolesToAdd = roles.filter((roleId) => interaction.values.includes(`role-add:${roleId}`));
+      const rolesToRemove = roles.filter((roleId) => !interaction.values.includes(`role-add:${roleId}`));
+
+      await interaction.member.roles.add(rolesToAdd);
+      await interaction.member.roles.remove(rolesToRemove);
+
+      await interaction.editReply({
+        content: getString('events.interactionCreate.rolesUpdated', {
+          variables: {
+            count: rolesToAdd.length,
+            roles: rolesToAdd.map((value) => `<@&${value}>`).join(', '),
+          },
+        }),
+      });
+
+      const strings = interaction.values
+        .filter((value) => value.startsWith('string'))
+        .map((value) => value.split(':')[1]);
+
+      for (const string of strings) {
+        if (string === 'russian-server') {
+          await interaction.followUp({
+            content: 'Вот ссылка на русский сервер: https://discord.gg/UFZrUJXKRG',
+            ephemeral: true,
+          });
+        }
       }
     }
   },
