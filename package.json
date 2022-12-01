@@ -22,7 +22,7 @@
     "@sapphire/time-utilities": "^1.7.6",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.1",
-    "eslint": "^8.23.0",
+    "eslint": "^8.28.0",
     "eslint-config-neon": "^0.1.32",
     "mongodb": "^4.9.0"
   },
