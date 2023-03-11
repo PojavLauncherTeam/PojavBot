@@ -41,6 +41,7 @@
   "commands.say.saycommandusagedembedescription": "Пользователь использовал say команду",
   "commands.say.user": "Пользователь",
   "commands.say.message": "Сообщение",
+  "commands.verification.click": "Нажмите для входа",
   "events.guildMemberAdd.joinedServer": "Присоединился к серверу",
   "events.guildMemberAdd.welcome": "Добро пожаловать!",
   "events.guildMemberRemove.goodbye": "До свидания!",
