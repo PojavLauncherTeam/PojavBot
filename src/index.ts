@@ -62,6 +62,6 @@ app.get('/auth', async (request, response) => {
   }
 });
 
-app.listen(50, () => {
+app.listen(5_000, () => {
   console.log('Web server is running');
 });
