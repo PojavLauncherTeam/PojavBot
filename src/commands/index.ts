@@ -8,6 +8,7 @@ export * as tag from './chatInput/tag';
 export * as tags from './chatInput/tags';
 export * as userinfo from './chatInput/userinfo';
 export * as report from './chatInput/report';
+export * as verification from './chatInput/verification';
 
 export type PojavChatInputCommand = {
   data: Pick<SlashCommandBuilder, 'toJSON'>;

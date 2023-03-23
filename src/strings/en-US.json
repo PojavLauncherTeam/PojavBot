@@ -41,6 +41,7 @@
   "commands.say.saycommandusagedembedescription": "A user executed the say command!",
   "commands.say.user": "User",
   "commands.say.message": "Message",
+  "commands.verification.click": "Click for login",
   "events.guildMemberAdd.joinedServer": "Joined the server",
   "events.guildMemberAdd.welcome": "Welcome!",
   "events.guildMemberRemove.goodbye": "Goodbye!",
