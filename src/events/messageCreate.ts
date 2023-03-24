@@ -21,7 +21,7 @@ export const event: PojavEvent<'messageCreate'> = {
           const embed = new EmbedBuilder()
             .setTitle('Log information')
             .setDescription(
-              `**Launcher version:** ${result.version.major_code}-${result.version.branch}\n**Game Version:** ${result.minecraft_version.name} (${result.minecraft_version.type})\n**Renderer:** ${result.renderer}\n**Java version:** ${result.java_runtime.version}    **Architecture:** ${result.architecture}`
+              `**Launcher version:** ${result.version.major_code}-${result.version.commit_number}-${result.version.branch}\n**Game Version:** ${result.minecraft_version.name} (${result.minecraft_version.type})\n**Renderer:** ${result.renderer}\n**Java version:** ${result.java_runtime.version}\n**Architecture:** ${result.architecture}`
             )
             .setColor(Colors.Green);
           if (result.errors.length) {
