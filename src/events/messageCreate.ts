@@ -32,17 +32,7 @@ export const event: PojavEvent<'messageCreate'> = {
           if (!result) return;
           const embed = new EmbedBuilder()
             .setTitle(`${getString('events.messageCreate.log_information')}`)
-            .setDescription(
-              `**${getString('events.messageCreate.launcher_version')}** ${result.version.major_code}-${
-                result.version.commit_number
-              }-${result.version.branch}
-              **${getString('events.messageCreate.game_version')}** ${getString(
-                result.minecraft_version.name
-              )} (${getString(result.minecraft_version.type)})
-              **${getString('events.messageCreate.render')}** ${getString(result.renderer)}
-              **${getString('events.messageCreate.java_version')}** ${getString(result.java_runtime.version)}
-              **${getString('events.messageCreate.architecture')}** ${getString(result.architecture)}`
-            )
+            .setDescription(`**${getString('events.messageCreate.launcher_version')}** ${result.version.major_code}-${result.version.commit_number}-${result.version.branch}**\n${getString('events.messageCreate.game_version')}** ${result.minecraft_version.name} (${getString(result.minecraft_version.type)})\n**${getString('events.messageCreate.render')}** ${getString(result.renderer)}**\n${getString('events.messageCreate.java_version')}** ${result.java_runtime.version}**\n${getString('events.messageCreate.architecture')}** ${getString(result.architecture)}`)
             .setColor(Colors.Green);
           if (result.errors.length) {
             embed.setColor(Colors.Red);
