@@ -4,6 +4,12 @@ on:
   - pull_request
 
 jobs:
+  cancel:
+    - name: Cancel previous runs
+      uses: styfle/cancel-workflow-action@0.10.0
+      with:
+        access_token: ${{ github.token }}
+
   build:
     name: Build bot
     runs-on: ubuntu-latest
@@ -47,3 +53,16 @@ jobs:
           YARN_ENABLE_GLOBAL_CACHE: 'false'
           YARN_NM_MODE: 'hardlinks-local'
           YARN_INSTALL_STATE_PATH: .yarn/ci-cache/install-state.gz
+
+  deploy:
+    name: Deployment
+    runs-on: BBS
+    if: ${{ github.repository_owner == 'PojavLauncherTeam' }}
+    steps:
+      - name: Deployment
+        env:
+          password: ${{ secrets.BBS_SECRET }}
+        run: |
+          cd /home/kremix/PojavBot
+          yarn pull-reset
+          echo $password | sudo -S systemctl restart PojavBot
