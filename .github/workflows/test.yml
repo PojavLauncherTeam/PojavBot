@@ -17,5 +17,13 @@ jobs:
           node-version: 16
           cache: yarn
 
+      - name: Setup .yarnrc.yml
+        run: |
+          yarn config set npmScopes.my-org.npmRegistryServer "https://npm.pkg.github.com"
+          yarn config set npmScopes.my-org.npmAlwaysAuth true
+          yarn config set npmScopes.my-org.npmAuthToken $NPM_AUTH_TOKEN
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.YARN_TOKEN }}
+
       - name: Install dependencies and compile code
         run: yarn --immutable
