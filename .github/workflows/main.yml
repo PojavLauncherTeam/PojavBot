@@ -67,4 +67,5 @@ jobs:
           password: ${{ secrets.BBS_SECRET }}
         run: |
           yarn pull-reset
+          cd /home/kremix/PojavBot
           echo $password | sudo -S systemctl restart PojavBot
