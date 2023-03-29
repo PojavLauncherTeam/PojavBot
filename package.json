@@ -14,7 +14,8 @@
   },
   "repository": "https://github.com/PojavLauncherTeam/PojavBot.git",
   "engines": {
-    "node": ">=18.15"
+    "node": ">=18.15",
+    "yarn": "3.5.0"
   },
   "dependencies": {
     "@messageformat/core": "^3.1.0",
