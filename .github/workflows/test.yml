@@ -39,10 +39,6 @@ jobs:
           path: .yarn/ci-cache/
           key: ${{ runner.os }}-yarn-install-state-cache-${{ hashFiles('yarn.lock', '.yarnrc.yml') }}
 
-      - name: Set yarn version
-        run: |
-          yarn set version 3.5.0
-
       - name: Install dependencies and compile code
         shell: bash
         run: |
