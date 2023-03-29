@@ -20,6 +20,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Change directory
+        run: |
+          cd /home/kremix/PojavBot
+
       - name: Install Node v16
         uses: actions/setup-node@v2
         with:
@@ -56,12 +60,11 @@ jobs:
           YARN_ENABLE_GLOBAL_CACHE: 'false'
           YARN_NM_MODE: 'hardlinks-local'
           YARN_INSTALL_STATE_PATH: .yarn/ci-cache/install-state.gz
-      
+
       - name: Deployment
         if: ${{ github.event_name == 'push' }}
         env:
           password: ${{ secrets.BBS_SECRET }}
         run: |
-          cd /home/kremix/PojavBot
           yarn pull-reset
           echo $password | sudo -S systemctl restart PojavBot
