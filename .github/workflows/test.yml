@@ -39,7 +39,7 @@ jobs:
           path: .yarn/ci-cache/
           key: ${{ runner.os }}-yarn-install-state-cache-${{ hashFiles('yarn.lock', '.yarnrc.yml') }}
 
-      - name: Install dependencies
+      - name: Install dependencies and compile code
         shell: bash
         run: |
           yarn install --immutable --inline-builds
@@ -47,6 +47,3 @@ jobs:
           YARN_ENABLE_GLOBAL_CACHE: 'false'
           YARN_NM_MODE: 'hardlinks-local'
           YARN_INSTALL_STATE_PATH: .yarn/ci-cache/install-state.gz
-
-      - name: Install dependencies and compile code
-        run: yarn --immutable
